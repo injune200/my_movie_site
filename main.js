@@ -6,33 +6,8 @@ const options = {
     }
 };
 
-// fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
-//     .then(response => response.json())
-//     .then(response => {
-//         let response_page_length = response["total_pages"];
-//         // for (let k =0; k < response_page_length; k++){
-//         //     create_card(k);
-//         // }
-//         create_card(1);
-
-//     })
-//     .catch(err => console.error(err));
-
-// function create_card(page_num) {
-//     let page_url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page='+page_num;
-//     fetch(page_url, options)
-//         .then(response => response.json())
-//         .then(response => {
-//             for (let i = 0; i < response["results"].length; i++) {
-//                 let poster_path = response["results"][i]["poster_path"];
-//                 let title = response["results"][i]["title"];
-//                 let overview = response["results"][i]["overview"];
-//                 let vote_average = response["results"][i]["vote_average"];
-//                 make_card_code(poster_path, title, overview, vote_average)
-//             }
-//         })
-//         .catch(err => console.error(err));
-// }
+let movie_list = [];
+let present_add_movie_id = [];
 
 fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
     .then(response => response.json())
@@ -42,14 +17,30 @@ fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', opti
             let title = response["results"][i]["title"];
             let overview = response["results"][i]["overview"];
             let vote_average = response["results"][i]["vote_average"];
-            make_card_code(poster_path, title, overview, vote_average)
+            let id = response["results"][i]["id"];
+            add_movie_list(poster_path, title, overview, vote_average, id)
+            make_card_code(poster_path, title, overview, vote_average, id)
         }
     })
     .catch(err => console.error(err));
 
+function add_movie_list(poster_path, title, overview, vote_average, id) { //카드 생성 함수
+    movie_list.push({
+        "id": id,
+        "poster_path": poster_path,
+        "title": title,
+        "overview": overview,
+        "vote_average": vote_average
+    });
+   
+}
 
-function make_card_code(poster_path, title, overview, vote_average) {
-    let temp_html = `<div class="col">
+
+function make_card_code(poster_path, title, overview, vote_average, id) { //카드 생성 함수
+   
+    present_add_movie_id.push(id);
+
+    let temp_html = `<div class="col" id="${id}">
     <div class="card h-100">
       <img src="https://image.tmdb.org/t/p/w500${poster_path}" class="card-img-top" alt="...">
       <div class="card-body">
@@ -63,5 +54,28 @@ function make_card_code(poster_path, title, overview, vote_average) {
   </div>`;
     let element = document.getElementById("card_position");
     element.innerHTML += temp_html;
+}
+
+function search_enter() {
+    let search_name = document.getElementById('search_title').value;
+
+    present_add_movie_id.map((id) => { del(id) })
+    present_add_movie_id = [];
+
+    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
+        .then(response => response.json())
+        .then(response => {
+            movie_list.map((num) => {
+                if (num["title"] == search_name) {
+                    make_card_code(num["poster_path"],num["title"],num["overview"],num["vote_average"],num["id"]);
+                }
+            })
+        })
+        .catch(err => console.error(err));
+}
+
+function del(id) { //카드 삭제
+    const div = document.getElementById(id);
+    div.remove();
 }
 
