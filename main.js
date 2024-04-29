@@ -40,7 +40,7 @@ function make_card_code(poster_path, title, overview, vote_average, id) { //카�
    
     present_add_movie_id.push(id);
 
-    let temp_html = `<div class="col" id="${id}">
+    let temp_html = `<div onclick="print_id(${id})" class="col" id="${id}">
     <div class="card h-100">
       <img src="https://image.tmdb.org/t/p/w500${poster_path}" class="card-img-top" alt="...">
       <div class="card-body">
@@ -79,3 +79,6 @@ function del(id) { //카드 삭제
     div.remove();
 }
 
+function print_id(id){
+    alert("id : "+id);
+}
