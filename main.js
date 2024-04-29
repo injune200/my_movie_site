@@ -32,12 +32,12 @@ function add_movie_list(poster_path, title, overview, vote_average, id) { //카�
         "overview": overview,
         "vote_average": vote_average
     });
-   
+
 }
 
 
 function make_card_code(poster_path, title, overview, vote_average, id) { //카드 생성 함수
-   
+
     present_add_movie_id.push(id);
 
     let temp_html = `<div onclick="print_id(${id})" class="col" id="${id}">
@@ -62,16 +62,11 @@ function search_enter() {
     present_add_movie_id.map((id) => { del(id) })
     present_add_movie_id = [];
 
-    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
-        .then(response => response.json())
-        .then(response => {
-            movie_list.map((num) => {
-                if (num["title"] == search_name) {
-                    make_card_code(num["poster_path"],num["title"],num["overview"],num["vote_average"],num["id"]);
-                }
-            })
-        })
-        .catch(err => console.error(err));
+    movie_list.map((num) => {
+        if (num["title"] == search_name) {
+            make_card_code(num["poster_path"], num["title"], num["overview"], num["vote_average"], num["id"]);
+        }
+    })
 }
 
 function del(id) { //카드 삭제
@@ -79,6 +74,6 @@ function del(id) { //카드 삭제
     div.remove();
 }
 
-function print_id(id){
-    alert("id : "+id);
+function print_id(id) {
+    alert("id : " + id);
 }
